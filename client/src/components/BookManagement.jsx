@@ -37,6 +37,7 @@ const BookManagement = () => {
   const [readBook, setReadBook] = useState({});
   const [borrowBookId, setBorrowBookId] = useState("");
   const [searchedKeyword, setSearchKeyword] = useState("");
+  const [borrowingBookId, setBorrowingBookId] = useState(null); // Track which book is being borrowed
 
   const openReadPopup = (id) => {
     const book = (books || []).find((book) => book._id === id);
@@ -52,7 +53,8 @@ const BookManagement = () => {
   // ✅ Borrow Handler for users (no email / userId needed)
   const handleBorrow = (bookId) => {
     if (!isAuthenticated) return toast.error("You must be logged in!");
-    dispatch(borrowBook(bookId));
+    setBorrowingBookId(bookId);
+    dispatch(borrowBook(bookId)).finally(() => setBorrowingBookId(null));
   };
 
   // Fetch books (and borrowed books if admin)
@@ -183,21 +185,35 @@ const BookManagement = () => {
                               (b) =>
                                 b.book._id === book._id && b.returnDate === null
                             );
-                            return isBorrowed ? (
-                              <button
-                                disabled
-                                className="px-3 py-1 text-white bg-gray-400 rounded-md cursor-not-allowed"
-                              >
-                                Borrowed
-                              </button>
-                            ) : (
-                              <button
-                                onClick={() => handleBorrow(book._id)}
-                                className="px-3 py-1 text-white bg-blue-600 rounded-md hover:bg-blue-700"
-                              >
-                                {borrowLoading ? "Borrowing..." : "Borrow"}
-                              </button>
-                            );
+                            if (isBorrowed) {
+                              return (
+                                <button
+                                  disabled
+                                  className="px-3 py-1 text-white bg-red-500 rounded-md cursor-not-allowed"
+                                >
+                                  Borrowed Already
+                                </button>
+                              );
+                            } else {
+                              return (
+                                <button
+                                  onClick={() => handleBorrow(book._id)}
+                                  className={`px-3 py-1 text-white bg-blue-600 rounded-md hover:bg-blue-700 ${
+                                    borrowingBookId === book._id
+                                      ? "opacity-70"
+                                      : ""
+                                  }`}
+                                  disabled={
+                                    borrowingBookId === book._id &&
+                                    borrowLoading
+                                  }
+                                >
+                                  {borrowingBookId === book._id && borrowLoading
+                                    ? "Borrowing..."
+                                    : "Borrow"}
+                                </button>
+                              );
+                            }
                           })()
                         ) : (
                           <span className="text-gray-500">Not Available</span>
