@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet-async";
 
 const Users = () => {
   const { users } = useSelector((state) => state.user);
+  const { borrowedBooks } = useSelector((state) => state.borrow);
 
   const formatDate = (timeStamp) => {
     const date = new Date(timeStamp);
@@ -21,10 +22,10 @@ const Users = () => {
 
   return (
     <>
-    <Helmet>
-      <title>Users</title>
-      <meta name="description" content="Users" />
-    </Helmet>
+      <Helmet>
+        <title>Users</title>
+        <meta name="description" content="Users" />
+      </Helmet>
       <main className="relative flex-1 p-6 pt-28">
         <Header />
         <header className="flex flex-col gap-3 md:flex-row md:justify-between md:items-center">
@@ -60,7 +61,8 @@ const Users = () => {
                       <td className="px-4 py-2">{user.email}</td>
                       <td className="px-4 py-2">{user.role}</td>
                       <td className="px-4 py-2">
-                        {user.borrowedBooks?.length || 0}
+                        {borrowedBooks?.filter((b) => b.user?.id === user._id)
+                          .length || 0}
                       </td>
                       <td className="px-4 py-2">
                         {formatDate(user.createdAt)}
