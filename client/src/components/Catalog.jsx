@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { PiKeyReturnBold } from "react-icons/pi";
 import { FaSquareCheck } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
@@ -113,64 +113,109 @@ const Catalog = () => {
         )}
         {error && <p className="mt-4 text-red-500">Error: {error}</p>}
 
-        {/* Table */}
+        {/* Enhanced Table */}
         {booksToDisplay && booksToDisplay.length > 0 ? (
-          <div className="mt-6 overflow-auto bg-white rounded-md shadow-lg">
-            <table className="min-w-full border-collapse">
-              <thead>
-                <tr className="bg-gray-200">
-                  <th className="px-4 py-2 text-left">#</th>
-                  <th className="px-4 py-2 text-left">Username</th>
-                  <th className="px-4 py-2 text-left">Email</th>
-                  <th className="px-4 py-2 text-left">Price</th>
-                  <th className="px-4 py-2 text-left">Due Date</th>
-                  <th className="px-4 py-2 text-left">Borrow Date</th>
-                  <th className="px-4 py-2 text-left">Return</th>
-                </tr>
-              </thead>
-              <tbody>
-                {booksToDisplay.map((b, i) => (
-                  <tr
-                    key={b._id || i}
-                    className={(i + 1) % 2 === 0 ? "bg-gray-50" : ""}
-                  >
-                    <td className="px-4 py-2">{i + 1}</td>
-                    <td className="px-4 py-2">{b?.user?.name || "Unknown"}</td>
-                    {/* ✅ Show email directly */}
-                    <td className="px-4 py-2">
-                      {b?.user?.email ? b.user.email : "No Email Found"}
-                    </td>
-                    <td className="px-4 py-2">{b?.price ?? "-"}</td>
-                    <td className="px-4 py-2">
-                      {formatDateAndTime(b?.dueDate)}
-                    </td>
-                    <td className="px-4 py-2">
-                      {formatDateAndTime(b?.borrowDate)}
-                    </td>
-                    <td className="px-4 py-2">
-                      {b.returnDate ? (
-                        <FaSquareCheck className="w-6 h-8 text-green-600" />
-                      ) : (
-                        <PiKeyReturnBold
-                          onClick={() =>
-                            openReturnBookPopup(
-                              b?.book?.id?._id,
-                              b?.user?.email,
-                              b?._id
-                            )
-                          }
-                          className="w-6 h-8 cursor-pointer hover:text-blue-500"
-                        />
-                      )}
-                    </td>
+          <div className="mt-6 overflow-hidden bg-white border border-gray-100 shadow-sm rounded-xl">
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-500 uppercase">
+                      #
+                    </th>
+                    <th className="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-500 uppercase">
+                      Username
+                    </th>
+                    <th className="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-500 uppercase">
+                      Email
+                    </th>
+                    <th className="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-500 uppercase">
+                      Price
+                    </th>
+                    <th className="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-500 uppercase">
+                      Due Date
+                    </th>
+                    <th className="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-500 uppercase">
+                      Borrow Date
+                    </th>
+                    <th className="px-6 py-4 text-xs font-semibold tracking-wider text-center text-gray-500 uppercase">
+                      Return
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {booksToDisplay.map((b, i) => (
+                    <tr
+                      key={b._id || i}
+                      className="transition-colors duration-150 hover:bg-gray-50"
+                    >
+                      <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+                        {i + 1}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">
+                          {b?.user?.name || "Unknown"}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-600">
+                          {b?.user?.email ? b.user.email : "No Email Found"}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="text-sm font-semibold text-gray-900">
+                          Rs.{b?.price ?? "-"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-600">
+                          <div className="font-medium">
+                            {formatDateAndTime(b?.dueDate)?.split(" ")[0]}
+                          </div>
+                          <div className="text-xs text-gray-400">
+                            {formatDateAndTime(b?.dueDate)?.split(" ")[1]}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-600">
+                          <div className="font-medium">
+                            {formatDateAndTime(b?.borrowDate)?.split(" ")[0]}
+                          </div>
+                          <div className="text-xs text-gray-400">
+                            {formatDateAndTime(b?.borrowDate)?.split(" ")[1]}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-center whitespace-nowrap">
+                        {b.returnDate ? (
+                          <div className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-full">
+                            <FaSquareCheck className="w-5 h-5 text-green-600" />
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() =>
+                              openReturnBookPopup(
+                                b?.book?.id?._id,
+                                b?.user?.email,
+                                b?._id
+                              )
+                            }
+                            className="inline-flex items-center justify-center w-8 h-8 transition-colors duration-200 bg-blue-100 rounded-full hover:bg-blue-200 group"
+                          >
+                            <PiKeyReturnBold className="w-5 h-5 text-blue-600 group-hover:text-blue-700" />
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         ) : (
           !loading && (
-            <h3 className="text-1xl mt-5 font-medium">
+            <h3 className="mt-5 font-medium text-1xl">
               No {filter === "borrowed" ? "borrowed" : "overdue"} books found!
             </h3>
           )
