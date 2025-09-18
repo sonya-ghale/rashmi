@@ -5,9 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleReturnBookPopup } from "../store/slices/popUpSlice";
 import { toast } from "react-toastify";
 import { fetchAllBooks, resetBookSlice } from "../store/slices/bookSlice";
-import { fetchAllBorrowedBooks, resetBorrowSlice } from "../store/slices/borrowSlice";
+import {
+  fetchAllBorrowedBooks,
+  resetBorrowSlice,
+} from "../store/slices/borrowSlice";
 import ReturnBookPopup from "../popups/ReturnBookPopup";
 import Header from "../layout/Header";
+import { Helmet } from "react-helmet-async";
 
 const Catalog = () => {
   const dispatch = useDispatch();
@@ -71,6 +75,10 @@ const Catalog = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Catelog</title>
+        <meta name="description" content="Catelog" />
+      </Helmet>
       <main className="relative flex-1 p-6 pt-28">
         <Header />
         {/* Sub Header / Filter Buttons */}
@@ -100,7 +108,9 @@ const Catalog = () => {
         </header>
 
         {/* Loading / Error */}
-        {loading && <p className="mt-4 text-blue-500">Loading borrowed books...</p>}
+        {loading && (
+          <p className="mt-4 text-blue-500">Loading borrowed books...</p>
+        )}
         {error && <p className="mt-4 text-red-500">Error: {error}</p>}
 
         {/* Table */}
@@ -120,21 +130,34 @@ const Catalog = () => {
               </thead>
               <tbody>
                 {booksToDisplay.map((b, i) => (
-                  <tr key={b._id || i} className={(i + 1) % 2 === 0 ? "bg-gray-50" : ""}>
+                  <tr
+                    key={b._id || i}
+                    className={(i + 1) % 2 === 0 ? "bg-gray-50" : ""}
+                  >
                     <td className="px-4 py-2">{i + 1}</td>
                     <td className="px-4 py-2">{b?.user?.name || "Unknown"}</td>
                     {/* ✅ Show email directly */}
-                    <td className="px-4 py-2">{b?.user?.email ? b.user.email : "No Email Found"}</td>
+                    <td className="px-4 py-2">
+                      {b?.user?.email ? b.user.email : "No Email Found"}
+                    </td>
                     <td className="px-4 py-2">{b?.price ?? "-"}</td>
-                    <td className="px-4 py-2">{formatDateAndTime(b?.dueDate)}</td>
-                    <td className="px-4 py-2">{formatDateAndTime(b?.borrowDate)}</td>
+                    <td className="px-4 py-2">
+                      {formatDateAndTime(b?.dueDate)}
+                    </td>
+                    <td className="px-4 py-2">
+                      {formatDateAndTime(b?.borrowDate)}
+                    </td>
                     <td className="px-4 py-2">
                       {b.returnDate ? (
                         <FaSquareCheck className="w-6 h-8 text-green-600" />
                       ) : (
                         <PiKeyReturnBold
                           onClick={() =>
-                            openReturnBookPopup(b?.book?.id?._id, b?.user?.email, b?._id)
+                            openReturnBookPopup(
+                              b?.book?.id?._id,
+                              b?.user?.email,
+                              b?._id
+                            )
                           }
                           className="w-6 h-8 cursor-pointer hover:text-blue-500"
                         />
@@ -154,7 +177,9 @@ const Catalog = () => {
         )}
       </main>
 
-      {returnBookPopup && <ReturnBookPopup bookId={borrowedRecordId} email={email} />}
+      {returnBookPopup && (
+        <ReturnBookPopup bookId={borrowedRecordId} email={email} />
+      )}
     </>
   );
 };

@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import logo from "../assets/black-logo.png";
 import logo_with_title from "../assets/logo-with-title.png";
 import { login, resetAuthSlice } from "../store/slices/authSlice";
+import { Helmet } from "react-helmet-async";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -50,15 +51,19 @@ const Login = () => {
   }
 
   return (
-    <div className="flex flex-col md:flex-row h-screen">
+    <div className="flex flex-col h-screen md:flex-row">
+          <Helmet>
+            <title>Login Page</title>
+            <meta name="description" content="Login Page" />
+          </Helmet>
       {/* LEFT SIDE */}
-      <div className="w-full md:w-1/2 flex flex-col items-center justify-center bg-white p-8 relative">
-        <div className="max-w-sm w-full text-center">
+      <div className="relative flex flex-col items-center justify-center w-full p-8 bg-white md:w-1/2">
+        <div className="w-full max-w-sm text-center">
           <div className="flex justify-center mb-8">
-            <img src={logo} alt="logo" className="h-24 w-auto" />
+            <img src={logo} alt="logo" className="w-auto h-24" />
           </div>
-          <h1 className="text-3xl font-medium mb-6">Welcome Back!!</h1>
-          <p className="text-gray-800 text-center mb-8">
+          <h1 className="mb-6 text-3xl font-medium">Welcome Back!!</h1>
+          <p className="mb-8 text-center text-gray-800">
             Please enter your credentials to login.
           </p>
 
@@ -69,7 +74,7 @@ const Login = () => {
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="border border-black rounded-md w-full px-4 py-3 focus:outline-none focus:ring-0"
+                className="w-full px-4 py-3 border border-black rounded-md focus:outline-none focus:ring-0"
                 required
               />
             </div>
@@ -79,7 +84,7 @@ const Login = () => {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="border border-black rounded-md w-full px-4 py-3 focus:outline-none focus:ring-0"
+                className="w-full px-4 py-3 border border-black rounded-md focus:outline-none focus:ring-0"
                 required
               />
             </div>
@@ -87,7 +92,7 @@ const Login = () => {
             <div className="mb-6 text-right">
               <Link
                 to="/password/forgot"
-                className="font-semibold text-black text-sm"
+                className="text-sm font-semibold text-black"
               >
                 Forgot Password?
               </Link>
@@ -96,7 +101,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="border-2 border-black w-full font-semibold bg-black text-white py-3 rounded-md hover:bg-white hover:text-black transition duration-300 disabled:opacity-50"
+              className="w-full py-3 font-semibold text-white transition duration-300 bg-black border-2 border-black rounded-md hover:bg-white hover:text-black disabled:opacity-50"
             >
               {loading ? "Processing..." : "LOGIN"}
             </button>
@@ -109,12 +114,12 @@ const Login = () => {
         justify-center p-8 rounded-tl-[80px] rounded-bl-[80px]">
         <div className="text-center">
           <div className="flex justify-center mb-12">
-            <img src={logo_with_title} alt="logo" className="h-44 w-auto" />
+            <img src={logo_with_title} alt="logo" className="w-auto h-44" />
           </div>
-          <p className="text-gray-300 mb-12">New to our platform? Sign up now.</p>
+          <p className="mb-12 text-gray-300">New to our platform? Sign up now.</p>
           <Link
             to="/register"
-            className="border-2 border-white px-8 font-semibold bg-black text-white py-3 rounded-md hover:bg-white hover:text-black transition duration-300 inline-block"
+            className="inline-block px-8 py-3 font-semibold text-white transition duration-300 bg-black border-2 border-white rounded-md hover:bg-white hover:text-black"
           >
             SIGN UP
           </Link>

@@ -9,6 +9,7 @@ import BookManagement from "../components/BookManagement";
 import Catalog from "../components/Catalog";
 import Users from "../components/Users";
 import MyBorrowedBooks from "../components/MyBorrowedBooks";
+import { Helmet } from "react-helmet-async";
 
 const Home = () => {
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
@@ -25,6 +26,10 @@ const Home = () => {
 
   return (
     <div className="relative flex min-h-screen bg-gray-100 md:pl-64">
+          <Helmet>
+            <title>Home Page</title>
+            <meta name="description" content="Home Page" />
+          </Helmet>
       {/* Hamburger Menu for mobile */}
       <div
         className="absolute z-10 flex items-center justify-center text-white bg-black rounded-md md:hidden right-6 top-4 sm:top-6 h-9 w-9"

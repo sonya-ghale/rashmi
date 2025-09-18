@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { otpVerification, resetAuthSlice } from "../store/slices/authSlice";
 import logo from "../assets/black-logo.png";
 import logo_with_title from "../assets/logo-with-title.png";
+import { Helmet } from "react-helmet-async";
 
 const OTP = () => {
   const location = useLocation();
@@ -59,6 +60,10 @@ const OTP = () => {
 
   return (
     <div className="flex flex-col h-screen md:flex-row">
+          <Helmet>
+            <title>OTP verification</title>
+            <meta name="description" content="Otp verification" />
+          </Helmet>
       {/* LEFT SIDE */}
       <div className="relative flex flex-col items-center justify-center w-full p-8 bg-white md:w-1/2">
         <Link

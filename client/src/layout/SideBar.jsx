@@ -1,7 +1,9 @@
-import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { toggleAddNewAdminPopup, toggleSettingPopup } from "../store/slices/popUpSlice";
+import {
+  toggleAddNewAdminPopup,
+  toggleSettingPopup,
+} from "../store/slices/popUpSlice";
 import { logout, resetAuthSlice } from "../store/slices/authSlice";
 
 import logo_with_title from "../assets/logo-with-title.png";
@@ -19,7 +21,9 @@ import SettingPopup from "../popups/SettingPopup";
 
 const SideBar = ({ isSideBarOpen, setIsSideBarOpen, setSelectedComponent }) => {
   const dispatch = useDispatch();
-  const { addNewAdminPopup, settingPopup } = useSelector((state) => state.popup);
+  const { addNewAdminPopup, settingPopup } = useSelector(
+    (state) => state.popup
+  );
   const { user, isAuthenticated, error, message, loading } = useSelector(
     (state) => state.auth
   );
@@ -48,14 +52,13 @@ const SideBar = ({ isSideBarOpen, setIsSideBarOpen, setSelectedComponent }) => {
   return (
     <>
       <aside
-  className={`${
-    isSideBarOpen ? "left-0" : "-left-full"
-  } z-10 transition-all duration-700 md:left-0 flex w-64 
+        className={`${
+          isSideBarOpen ? "left-0" : "-left-full"
+        } z-10 transition-all duration-700 md:left-0 flex w-64 
   text-white flex-col h-full 
   bg-gradient-to-b from-gray-800 via-gray-900 to-black`}
-  style={{ position: "fixed" }}
->
-
+        style={{ position: "fixed" }}
+      >
         {/* Logo */}
         <div className="px-6 py-4 my-8">
           <img src={logo_with_title} alt="Logo" />

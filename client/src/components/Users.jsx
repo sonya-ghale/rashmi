@@ -1,6 +1,6 @@
-import React from "react";
 import { useSelector } from "react-redux";
 import Header from "../layout/Header";
+import { Helmet } from "react-helmet-async";
 
 const Users = () => {
   const { users } = useSelector((state) => state.user);
@@ -21,10 +21,14 @@ const Users = () => {
 
   return (
     <>
+    <Helmet>
+      <title>Users</title>
+      <meta name="description" content="Users" />
+    </Helmet>
       <main className="relative flex-1 p-6 pt-28">
         <Header />
         <header className="flex flex-col gap-3 md:flex-row md:justify-between md:items-center">
-          <h2 className="text-xl font-medium md:text-2xl font-semibold">
+          <h2 className="text-xl font-medium font-semibold md:text-2xl">
             Registered Users
           </h2>
         </header>

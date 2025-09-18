@@ -1,5 +1,6 @@
-import  { useEffect } from "react";
+import { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 
@@ -13,7 +14,10 @@ import ResetPassword from "./pages/ResetPassword";
 import { getUser } from "./store/slices/authSlice";
 import { fetchAllUsers } from "./store/slices/userSlice";
 import { fetchAllBooks } from "./store/slices/bookSlice";
-import { fetchAllBorrowedBooks, fetchUserBorrowedBooks } from "./store/slices/borrowSlice";
+import {
+  fetchAllBorrowedBooks,
+  fetchUserBorrowedBooks,
+} from "./store/slices/borrowSlice";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -39,17 +43,19 @@ const App = () => {
   if (loading) return <div className="p-4 text-center">Loading...</div>;
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/password/forgot" element={<ForgotPassword />} />
-        <Route path="/otp-verification/:email" element={<OTP />} />
-        <Route path="/password/reset/:token" element={<ResetPassword />} />
-      </Routes>
-      <ToastContainer theme="dark" />
-    </Router>
+    <HelmetProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/password/forgot" element={<ForgotPassword />} />
+          <Route path="/otp-verification/:email" element={<OTP />} />
+          <Route path="/password/reset/:token" element={<ResetPassword />} />
+        </Routes>
+        <ToastContainer theme="dark" />
+      </Router>
+    </HelmetProvider>
   );
 };
 

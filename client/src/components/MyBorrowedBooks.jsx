@@ -6,6 +6,7 @@ import { toggleReadBookPopup } from "../store/slices/popUpSlice";
 import { fetchUserBorrowedBooks } from "../store/slices/borrowSlice"; 
 import Header from "../layout/Header";
 import ReadBookPopup from "../popups/ReadBookPopup";
+import { Helmet } from "react-helmet-async";
 
 const MyBorrowedBooks = () => {
   const dispatch = useDispatch();
@@ -48,6 +49,10 @@ const MyBorrowedBooks = () => {
 
   return (
     <>
+        <Helmet>
+          <title>Borrowred Books</title>
+          <meta name="description" content="My Borrowred Books" />
+        </Helmet>
       <main className="relative flex-1 p-6 pt-28">
         <Header />
 

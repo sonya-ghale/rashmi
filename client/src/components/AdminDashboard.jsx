@@ -15,6 +15,7 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import Header from "../layout/Header";
+import { Helmet } from "react-helmet-async";
 
 ChartJS.register(
   CategoryScale,
@@ -103,6 +104,10 @@ const AdminDashboard = () => {
 
   return (
     <>
+        <Helmet>
+          <title>Admin Dashboard</title>
+          <meta name="description" content="Admin Dashboard" />
+        </Helmet>
       <Header />
       <div
         style={{

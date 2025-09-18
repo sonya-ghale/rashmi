@@ -18,6 +18,7 @@ import Header from "../layout/Header";
 import AddBookPopup from "../popups/AddBookPopup";
 import ReadBookPopup from "../popups/ReadBookPopup";
 import RecordBookPopup from "../popups/RecordBookPopup";
+import { Helmet } from "react-helmet-async";
 
 const BookManagement = () => {
   const dispatch = useDispatch();
@@ -91,6 +92,10 @@ const BookManagement = () => {
 
   return (
     <>
+        <Helmet>
+          <title>Book Management</title>
+          <meta name="description" content="Book Management" />
+        </Helmet>
       <main className="relative flex-1 p-6 pt-28">
         <Header />
 

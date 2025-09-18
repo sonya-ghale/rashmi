@@ -11,6 +11,7 @@ import {
 import { Bar } from "react-chartjs-2";
 import { useSelector } from "react-redux";
 import Header from "../layout/Header";
+import {Helmet} from "react-helmet-async";
 
 ChartJS.register(
   CategoryScale,
@@ -93,6 +94,10 @@ const UserDashboard = () => {
 
   return (
     <>
+<Helmet>
+  <title>User Dashboard</title>
+  <meta name="description" content="User Dashboard" />
+</Helmet>
       <Header />
       <div
         style={{
