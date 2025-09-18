@@ -131,11 +131,17 @@ export const fetchAllBorrowedBooks = () => async (dispatch) => {
     const res = await axios.get(`${API}/borrowed-books-by-users`, {
       withCredentials: true,
     });
-    dispatch(borrowSlice.actions.fetchBorrowSuccess(res.data.borrowedBooks));
+    // Support both { borrowedBooks: [...] } and [...]
+    const borrowedBooks = Array.isArray(res.data)
+      ? res.data
+      : res.data.borrowedBooks;
+    dispatch(borrowSlice.actions.fetchBorrowSuccess(borrowedBooks));
   } catch (err) {
     dispatch(
       borrowSlice.actions.fetchBorrowFailed(
-        err.response?.data?.message || err.message || "Failed to fetch borrowed books"
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch borrowed books"
       )
     );
   }
@@ -151,7 +157,9 @@ export const fetchUserBorrowedBooks = () => async (dispatch) => {
   } catch (err) {
     dispatch(
       borrowSlice.actions.fetchBorrowFailed(
-        err.response?.data?.message || err.message || "Failed to fetch borrowed books"
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch borrowed books"
       )
     );
   }

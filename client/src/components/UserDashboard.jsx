@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,16 +12,23 @@ import { Bar } from "react-chartjs-2";
 import { useSelector } from "react-redux";
 import Header from "../layout/Header";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const UserDashboard = () => {
-  const { user } = useSelector((state) => state.auth);
-  const { userBorrowedBooks } = useSelector((state) => state.borrow);
+  // const { user } = useSelector((state) => state.auth);
+  const { borrowedBooks } = useSelector((state) => state.borrow);
   const { books } = useSelector((state) => state.book);
 
   // Real-time values
-  const totalBorrowed = userBorrowedBooks?.length || 0;
-  const toReturn = userBorrowedBooks?.filter((b) => !b.isReturned).length || 0;
+  const totalBorrowed = borrowedBooks?.length || 0;
+  const toReturn = borrowedBooks?.filter((b) => !b.returnDate).length || 0;
   const totalInventory = books?.length || 0;
 
   // Monthly data
@@ -29,7 +36,7 @@ const UserDashboard = () => {
     const borrowCount = Array(12).fill(0);
     const returnCount = Array(12).fill(0);
 
-    userBorrowedBooks?.forEach((book) => {
+    borrowedBooks?.forEach((book) => {
       const borrowMonth = new Date(book.borrowDate).getMonth();
       borrowCount[borrowMonth] += 1;
 
@@ -40,10 +47,23 @@ const UserDashboard = () => {
     });
 
     return { borrowCount, returnCount };
-  }, [userBorrowedBooks]);
+  }, [borrowedBooks]);
 
   const data = {
-    labels: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+    labels: [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ],
     datasets: [
       {
         label: "Borrowed",
@@ -64,12 +84,12 @@ const UserDashboard = () => {
   };
 
   // role color
-  const roleColor =
-    user?.role === "admin"
-      ? { color: "red" }
-      : user?.role === "user"
-      ? { color: "gold" }
-      : { color: "gray" };
+  // const roleColor =
+  //   user?.role === "admin"
+  //     ? { color: "red" }
+  //     : user?.role === "user"
+  //     ? { color: "gold" }
+  //     : { color: "gray" };
 
   return (
     <>
@@ -83,7 +103,6 @@ const UserDashboard = () => {
           boxSizing: "border-box",
         }}
       >
-
         {/* Top Cards */}
         <div
           style={{
@@ -94,31 +113,80 @@ const UserDashboard = () => {
             width: "100%",
           }}
         >
-          <div style={{ background: "#3b82f6", padding: "20px", borderRadius: "10px", color: "white", textAlign: "center" }}>
-            <span style={{ fontSize: "40px", fontWeight: "bold" }}>{totalBorrowed}</span>
+          <div
+            style={{
+              background: "#3b82f6",
+              padding: "20px",
+              borderRadius: "10px",
+              color: "white",
+              textAlign: "center",
+            }}
+          >
+            <span style={{ fontSize: "40px", fontWeight: "bold" }}>
+              {totalBorrowed}
+            </span>
             <p>Total Borrowed</p>
           </div>
-          <div style={{ background: "#f59e0b", padding: "20px", borderRadius: "10px", color: "white", textAlign: "center" }}>
-            <span style={{ fontSize: "40px", fontWeight: "bold" }}>{toReturn}</span>
+          <div
+            style={{
+              background: "#f59e0b",
+              padding: "20px",
+              borderRadius: "10px",
+              color: "white",
+              textAlign: "center",
+            }}
+          >
+            <span style={{ fontSize: "40px", fontWeight: "bold" }}>
+              {toReturn}
+            </span>
             <p>Books To Return</p>
           </div>
-          <div style={{ background: "#10b981", padding: "20px", borderRadius: "10px", color: "white", textAlign: "center" }}>
-            <span style={{ fontSize: "40px", fontWeight: "bold" }}>{totalInventory}</span>
+          <div
+            style={{
+              background: "#10b981",
+              padding: "20px",
+              borderRadius: "10px",
+              color: "white",
+              textAlign: "center",
+            }}
+          >
+            <span style={{ fontSize: "40px", fontWeight: "bold" }}>
+              {totalInventory}
+            </span>
             <p>Book Inventory</p>
           </div>
         </div>
 
         {/* Two Column Layout */}
-        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "20px", width: "100%" }}>
-          <div style={{ background: "white", padding: "20px", borderRadius: "10px" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "2fr 1fr",
+            gap: "20px",
+            width: "100%",
+          }}
+        >
+          <div
+            style={{
+              background: "white",
+              padding: "20px",
+              borderRadius: "10px",
+            }}
+          >
             <h2>Monthly Transaction Report</h2>
             <Bar data={data} options={options} />
           </div>
-          <div style={{ background: "white", padding: "20px", borderRadius: "10px" }}>
+          <div
+            style={{
+              background: "white",
+              padding: "20px",
+              borderRadius: "10px",
+            }}
+          >
             <h2>Books Due Soon</h2>
             <ul style={{ paddingLeft: 0, listStyle: "none", margin: 0 }}>
-              {userBorrowedBooks
-                ?.filter((b) => !b.isReturned)
+              {borrowedBooks
+                ?.filter((b) => !b.returnDate)
                 .slice(0, 6)
                 .map((book) => (
                   <li
@@ -130,14 +198,16 @@ const UserDashboard = () => {
                       borderBottom: "1px solid #ddd",
                     }}
                   >
-                    <span>{book.title}</span>
+                    <span>{book.book?.title || "Unknown"}</span>
                     <span style={{ color: "red", fontSize: "14px" }}>
                       {new Date(book.dueDate).toLocaleDateString()}
                     </span>
                   </li>
                 ))}
               {toReturn === 0 && (
-                <p style={{ color: "#666", textAlign: "center" }}>No pending returns!</p>
+                <p style={{ color: "#666", textAlign: "center" }}>
+                  No pending returns!
+                </p>
               )}
             </ul>
           </div>
