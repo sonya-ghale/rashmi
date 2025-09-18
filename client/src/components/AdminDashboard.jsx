@@ -104,10 +104,10 @@ const AdminDashboard = () => {
 
   return (
     <>
-        <Helmet>
-          <title>Admin Dashboard</title>
-          <meta name="description" content="Admin Dashboard" />
-        </Helmet>
+      <Helmet>
+        <title>Admin Dashboard</title>
+        <meta name="description" content="Admin Dashboard" />
+      </Helmet>
       <Header />
       <div
         style={{
@@ -177,10 +177,12 @@ const AdminDashboard = () => {
                   <span
                     style={{
                       fontSize: "14px",
-                      color: book.isBorrowed ? "red" : "green",
+                      color: book.availability ? "green" : "red",
                     }}
                   >
-                    {book.isBorrowed ? "Borrowed" : "Available"}
+                    {book.availability
+                      ? `Available (${book.quantity})`
+                      : "Unavailable"}
                   </span>
                 </li>
               ))}
