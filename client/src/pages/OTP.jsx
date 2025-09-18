@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { useLocation, Navigate, Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -58,23 +58,22 @@ const OTP = () => {
   }
 
   return (
-    <div className="flex flex-col md:flex-row h-screen">
+    <div className="flex flex-col h-screen md:flex-row">
       {/* LEFT SIDE */}
-      <div className="w-full md:w-1/2 flex flex-col items-center justify-center bg-white p-8 relative">
+      <div className="relative flex flex-col items-center justify-center w-full p-8 bg-white md:w-1/2">
         <Link
           to={"/login"}
-          className="border-2 border-black rounded-3xl font-bold w-24 py-2 px-4 absolute top-10 left-10
-              hover:bg-black hover:text-white duration-300 text-center"
+          className="absolute w-24 px-4 py-2 font-bold text-center duration-300 border-2 border-black rounded-3xl top-10 left-10 hover:bg-black hover:text-white"
         >
           Back
         </Link>
 
-        <div className="max-w-sm w-full text-center">
+        <div className="w-full max-w-sm text-center">
           <div className="flex justify-center mb-8">
-            <img src={logo} alt="logo" className="h-24 w-auto" />
+            <img src={logo} alt="logo" className="w-auto h-24" />
           </div>
-          <h1 className="text-3xl font-medium mb-6">Check Your Mailbox</h1>
-          <p className="text-gray-800 text-center mb-12">
+          <h1 className="mb-6 text-3xl font-medium">Check Your Mailbox</h1>
+          <p className="mb-12 text-center text-gray-800">
             Please enter the OTP sent to <strong>{email}</strong>
           </p>
 
@@ -84,7 +83,7 @@ const OTP = () => {
               placeholder="Enter OTP"
               value={otp}
               onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))} // Only numbers, max 6 digits
-              className="border rounded-lg px-4 py-2 mb-4 w-64 text-center text-xl tracking-widest"
+              className="w-64 px-4 py-2 mb-4 text-xl tracking-widest text-center border rounded-lg"
               maxLength={6}
             />
             <button
@@ -100,8 +99,8 @@ const OTP = () => {
           </form>
           
           <div className="mt-6">
-            <p className="text-gray-600 text-sm">
-              Didn't receive the OTP?{" "}
+            <p className="text-sm text-gray-600">
+              Didnt receive the OTP?{" "}
               <button 
                 className="text-blue-600 hover:underline"
                 onClick={() => toast.info("Resend functionality would go here")}
@@ -118,13 +117,12 @@ const OTP = () => {
         justify-center p-8 rounded-tl-[80px] rounded-tr-[80px]">
         <div className="text-center h-[400px]">
           <div className="flex justify-center mb-12">
-            <img src={logo_with_title} alt="logo" className="mb-12 h-44 w-auto"/>
+            <img src={logo_with_title} alt="logo" className="w-auto mb-12 h-44"/>
           </div>
-          <p className="text-gray-300 mb-12">New to our platform? Sign up now.</p>
+          <p className="mb-12 text-gray-300">New to our platform? Sign up now.</p>
           <Link
             to={"/register"}                 
-            className="border-2 mt-5 border-white px-8 w-full font-semibold bg-black text-white py-2 rounded-lg
-              hover:bg-white hover:text-black transition"
+            className="w-full px-8 py-2 mt-5 font-semibold text-white transition bg-black border-2 border-white rounded-lg hover:bg-white hover:text-black"
           >
             SIGN UP
           </Link>

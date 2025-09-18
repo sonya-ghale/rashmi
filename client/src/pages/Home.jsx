@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
@@ -24,11 +24,10 @@ const Home = () => {
   const role = user?.role?.toLowerCase();
 
   return (
-    <div className="relative md:pl-64 flex min-h-screen bg-gray-100">
+    <div className="relative flex min-h-screen bg-gray-100 md:pl-64">
       {/* Hamburger Menu for mobile */}
       <div
-        className="md:hidden z-10 absolute right-6 top-4 sm:top-6 flex justify-center items-center
-         bg-black rounded-md h-9 w-9 text-white"
+        className="absolute z-10 flex items-center justify-center text-white bg-black rounded-md md:hidden right-6 top-4 sm:top-6 h-9 w-9"
       >
         <GiHamburgerMenu
           className="text-2xl"

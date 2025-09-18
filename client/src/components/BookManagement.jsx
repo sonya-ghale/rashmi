@@ -1,5 +1,5 @@
 // src/pages/BookManagement.jsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { BookA, NotebookPen } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -31,6 +31,7 @@ const BookManagement = () => {
     loading: borrowLoading,
     error: borrowError,
     message: borrowMessage,
+    borrowedBooks,
   } = useSelector((state) => state.borrow);
 
   const [readBook, setReadBook] = useState({});
@@ -96,12 +97,11 @@ const BookManagement = () => {
           <h2 className="text-xl font-medium md:text-2xl md:font-semibold">
             {user?.role === "admin" ? "Book Management" : "Books"}
           </h2>
-          <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4">
+          <div className="flex flex-col space-y-4 lg:flex-row lg:space-y-0 lg:space-x-4">
             {isAuthenticated && user?.role === "admin" && (
               <button
                 onClick={() => dispatch(toggleAddBookPopup())}
-                className="relative pl-14 w-full sm:w-52 flex gap-4 justify-center items-center py-2 px-4
-                  bg-black text-white rounded-md hover:bg-gray-800"
+                className="relative flex items-center justify-center w-full gap-4 px-4 py-2 text-white bg-black rounded-md pl-14 sm:w-52 hover:bg-gray-800"
               >
                 <span
                   className="bg-white flex justify-center items-center overflow-hidden 
@@ -115,7 +115,7 @@ const BookManagement = () => {
             <input
               type="text"
               placeholder="Search books"
-              className="w-full sm:w-52 border p-2 border-gray-300 rounded-md"
+              className="w-full p-2 border border-gray-300 rounded-md sm:w-52"
               value={searchedKeyword}
               onChange={handleSearch}
             />
@@ -165,7 +165,7 @@ const BookManagement = () => {
 
                     {/* ✅ Admin Actions */}
                     {user?.role === "admin" && (
-                      <td className="px-4 py-2 flex space-x-2 my-3 justify-center">
+                      <td className="flex justify-center px-4 py-2 my-3 space-x-2">
                         <BookA onClick={() => openReadPopup(book._id)} />
                         <NotebookPen
                           onClick={() => openRecordBookPopup(book._id)}
@@ -177,12 +177,28 @@ const BookManagement = () => {
                     {user?.role === "user" && (
                       <td className="px-4 py-2 text-center">
                         {book.availability ? (
-                          <button
-                            onClick={() => handleBorrow(book._id)}
-                            className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700"
-                          >
-                            {borrowLoading ? "Borrowing..." : "Borrow"}
-                          </button>
+                          (() => {
+                            // Check if this book is already borrowed and not returned
+                            const isBorrowed = borrowedBooks?.some(
+                              (b) =>
+                                b.book._id === book._id && b.returnDate === null
+                            );
+                            return isBorrowed ? (
+                              <button
+                                disabled
+                                className="px-3 py-1 text-white bg-gray-400 rounded-md cursor-not-allowed"
+                              >
+                                Borrowed
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => handleBorrow(book._id)}
+                                className="px-3 py-1 text-white bg-blue-600 rounded-md hover:bg-blue-700"
+                              >
+                                {borrowLoading ? "Borrowing..." : "Borrow"}
+                              </button>
+                            );
+                          })()
                         ) : (
                           <span className="text-gray-500">Not Available</span>
                         )}
@@ -194,7 +210,7 @@ const BookManagement = () => {
             </table>
           </div>
         ) : (
-          <h3 className="text-3xl mt-5 font-medium">
+          <h3 className="mt-5 text-3xl font-medium">
             No books found in library!
           </h3>
         )}

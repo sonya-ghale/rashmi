@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from "react";
+// src/pages/MyBorrowedBooks.jsx
+import { useState, useEffect } from "react";
 import { BookA } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleReadBookPopup } from "../store/slices/popUpSlice";
-import { fetchUserBorrowedBooks } from "../store/slices/borrowSlice"; // ✅ import thunk
+import { fetchUserBorrowedBooks } from "../store/slices/borrowSlice"; 
 import Header from "../layout/Header";
 import ReadBookPopup from "../popups/ReadBookPopup";
 
 const MyBorrowedBooks = () => {
   const dispatch = useDispatch();
 
-  // Redux state
   const { borrowedBooks: userBorrowedBooks, loading, error } = useSelector(
     (state) => state.borrow
   );
   const { readBookPopup } = useSelector((state) => state.popup);
 
   const [readBook, setReadBook] = useState({});
+  const [activeTab, setActiveTab] = useState("all"); // all | returned | non-returned
 
-  // ✅ Fetch on component mount
   useEffect(() => {
     dispatch(fetchUserBorrowedBooks());
   }, [dispatch]);
@@ -39,69 +39,63 @@ const MyBorrowedBooks = () => {
     return `${formattedDate} ${formattedTime}`;
   };
 
-  // filter state
-  const [filter, setFilter] = useState("returned");
-
-  const returnedBooks =
-    userBorrowedBooks?.filter((b) => b.returnDate !== null) || [];
-  const nonReturnedBooks =
-    userBorrowedBooks?.filter((b) => b.returnDate === null) || [];
-
-  const booksToDisplay =
-    filter === "returned" ? returnedBooks : nonReturnedBooks;
+  // Filter books based on active tab
+  const displayedBooks = userBorrowedBooks?.filter((b) => {
+    if (activeTab === "returned") return b.returnDate !== null;
+    if (activeTab === "non-returned") return b.returnDate === null;
+    return true; // all
+  });
 
   return (
     <>
       <main className="relative flex-1 p-6 pt-28">
         <Header />
 
-        {/* Sub Header */}
+        {/* Header */}
         <header className="flex flex-col gap-3 md:flex-row md:justify-between md:items-center">
           <h2 className="text-xl font-medium md:text-2xl md:font-semibold">
-            Borrowed Books
+            My Borrowed Books
           </h2>
         </header>
 
-        {/* Show loading or error */}
-        {loading && (
-          <p className="mt-4 text-blue-500 font-medium">Loading borrowed books...</p>
-        )}
-        {error && (
-          <p className="mt-4 text-red-500 font-medium">Error: {error}</p>
-        )}
+        {/* Tabs */}
+        <div className="flex flex-col gap-2 mt-4 sm:flex-row sm:space-x-4">
+          <button
+            onClick={() => setActiveTab("all")}
+            className={`py-2 px-4 font-semibold rounded ${
+              activeTab === "all" ? "bg-blue-500 text-white" : "bg-gray-200 text-black hover:bg-gray-300"
+            }`}
+          >
+            All Borrowed
+          </button>
+          <button
+            onClick={() => setActiveTab("returned")}
+            className={`py-2 px-4 font-semibold rounded ${
+              activeTab === "returned" ? "bg-green-500 text-white" : "bg-gray-200 text-black hover:bg-gray-300"
+            }`}
+          >
+            Returned
+          </button>
+          <button
+            onClick={() => setActiveTab("non-returned")}
+            className={`py-2 px-4 font-semibold rounded ${
+              activeTab === "non-returned" ? "bg-yellow-500 text-white" : "bg-gray-200 text-black hover:bg-gray-300"
+            }`}
+          >
+            Non-Returned
+          </button>
+        </div>
 
-        {/* Filter Buttons */}
-        <header className="flex flex-col gap-3 sm:flex-row md:items-center mt-4">
-          <button
-            className={`relative rounded sm:rounded-tr-none sm:rounded-br-none sm:rounded-tl-lg
-              sm:rounded-bl-lg text-center border-2 font-semibold py-2 w-full sm:w-72 ${
-                filter === "returned"
-                  ? "bg-green-500 text-white border-green-500"
-                  : "bg-gray-200 text-black border-gray-200 hover:bg-gray-300"
-              }`}
-            onClick={() => setFilter("returned")}
-          >
-            Returned Books
-          </button>
-          <button
-            className={`relative rounded sm:rounded-tl-none sm:rounded-bl-none sm:rounded-tr-lg
-              sm:rounded-br-lg text-center border-2 font-semibold py-2 w-full sm:w-72 ${
-                filter === "non-returned"
-                  ? "bg-yellow-500 text-white border-yellow-500"
-                  : "bg-gray-200 text-black border-gray-200 hover:bg-gray-300"
-              }`}
-            onClick={() => setFilter("non-returned")}
-          >
-            Non-Returned Books
-          </button>
-        </header>
+        {/* Loading/Error */}
+        {loading && <p className="mt-4 font-medium text-blue-500">Loading borrowed books...</p>}
+        {error && <p className="mt-4 font-medium text-red-500">Error: {error}</p>}
 
         {/* Table */}
-        {booksToDisplay && booksToDisplay.length > 0 ? (
+        {displayedBooks && displayedBooks.length > 0 ? (
           <div className="mt-6 overflow-auto bg-white rounded-md shadow-lg">
             <table className="min-w-full border-collapse">
               <thead>
-                <tr className="bg-blue-500 text-white">
+                <tr className="text-white bg-blue-500">
                   <th className="px-4 py-2 text-left">ID</th>
                   <th className="px-4 py-2 text-left">Book Title</th>
                   <th className="px-4 py-2 text-left">Author</th>
@@ -113,34 +107,21 @@ const MyBorrowedBooks = () => {
               </thead>
 
               <tbody>
-                {booksToDisplay.map((borrow, index) => (
-                  <tr
-                    key={index}
-                    className={(index + 1) % 2 === 0 ? "bg-gray-50" : ""}
-                  >
+                {displayedBooks.map((borrow, index) => (
+                  <tr key={index} className={(index + 1) % 2 === 0 ? "bg-gray-50" : ""}>
                     <td className="px-4 py-2">{index + 1}</td>
-                    <td className="px-4 py-2">
-                      {borrow.book?.id?.title || "Unknown"}
-                    </td>
-                    <td className="px-4 py-2">
-                      {borrow.book?.id?.author || "Unknown Author"}
-                    </td>
-                    <td className="px-4 py-2">
-                      {formatDate(borrow.borrowDate)}
-                    </td>
+                    <td className="px-4 py-2">{borrow.book?.title || "Unknown"}</td>
+                    <td className="px-4 py-2">{borrow.book?.author || "Unknown Author"}</td>
+                    <td className="px-4 py-2">{formatDate(borrow.borrowDate)}</td>
                     <td className="px-4 py-2">{formatDate(borrow.dueDate)}</td>
-                    <td
-                      className={`px-4 py-2 font-semibold ${
-                        borrow.returnDate ? "text-green-600" : "text-yellow-600"
-                      }`}
-                    >
+                    <td className={`px-4 py-2 font-semibold ${borrow.returnDate ? "text-green-600" : "text-yellow-600"}`}>
                       {borrow.returnDate ? "Yes" : "No"}
                     </td>
                     <td className="px-4 py-2">
                       {borrow.book?.id && (
                         <BookA
                           className="cursor-pointer hover:text-blue-500"
-                          onClick={() => openReadPopup(borrow.book.id)}
+                          onClick={() => openReadPopup(borrow.book)}
                         />
                       )}
                     </td>
@@ -149,14 +130,10 @@ const MyBorrowedBooks = () => {
               </tbody>
             </table>
           </div>
-        ) : !loading && ( // ✅ only show when not loading
-          filter === "returned" ? (
-            <h3 className="text-1xl mt-5 font-medium text-green-600">
-              No returned books found!
-            </h3>
-          ) : (
-            <h3 className="text-1xl mt-5 font-medium text-yellow-600">
-              No non-returned books found!
+        ) : (
+          !loading && (
+            <h3 className="mt-5 font-medium text-gray-600 text-1xl">
+              No books found in this category!
             </h3>
           )
         )}
